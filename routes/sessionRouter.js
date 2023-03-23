@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-router.get('/session/:id');
+router.get('/:id');
 
-router.get('/session');
+router.get('/');
 
-router.post('/session/create')
+router.post('/create')

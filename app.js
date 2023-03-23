@@ -5,9 +5,17 @@ const User = require("./model/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const app = express();
-const auth = require("./middleware/auth")
+const auth = require("./middleware/auth");
+const cors = require("cors");
 
 app.use(express.json());
+app.use(cors({
+    origin: ['http://localhost:4001','http://localhost:5173']
+}));
+
+// var sessionRouter = require('./routes/sessionRouter');
+
+// app.use('/sessions', sessionRouter);
 
 // Logic goes here
 app.post('/register', async (req, res) => {
@@ -54,6 +62,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', async (req, res) => {
 
     try {
+        console.log(req.body);
         const { email, password } = req.body;
 
         if (!(email && password)) {
@@ -62,7 +71,7 @@ app.post('/login', async (req, res) => {
 
         const user = await User.findOne({ email });
 
-        if (user.email && (await bcrypt.compare(password, user.password))) {
+        if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
                 { user_id: user._id, email },
                 process.env.TOKEN_KEY,
